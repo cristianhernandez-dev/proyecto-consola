@@ -1,174 +1,289 @@
-console.log("JS conectado correctamente");
+/**
+ * PROYECTO FINAL – Aplicación de Consola (Fundamentos JS)
+ * Requisitos:
+ * - Ejecuta en consola del navegador
+ * - Entrada por prompt / salida por console.log y alert
+ * - Funciones (3+ operaciones) + modularización
+ * - Condicionales (if/switch) y bucles (while/for)
+ * - Arreglos y objetos (historial + usuario)
+ * - Validaciones (números, cancelación, división por cero)
+ */
 
-/******************************************************
- PROYECTO: Aplicación de Consola - Fundamentos JS
- Autor: Javiera Ramirez
- Descripción:
- Aplicación interactiva en consola que permite:
- - Realizar operaciones matemáticas
- - Usar estructuras condicionales y ciclos
- - Trabajar con arreglos y objetos
- - Modularizar el código con funciones
-******************************************************/
-
-/* ============================
-   MENSAJE DE BIENVENIDA
-============================ */
-
-console.log("Bienvenido/a a la Aplicación de Consola 🧮");
-alert("Bienvenido/a a la Aplicación de Fundamentos en JavaScript");
-
-/* ============================
-   FUNCIONES MATEMÁTICAS
-============================ */
-
-// Funciones reutilizables para operaciones básicas
-
-function sumar(a, b) {
-    return a + b;
-}
-
-function restar(a, b) {
-    return a - b;
-}
-
-function multiplicar(a, b) {
-    return a * b;
-}
-
-function dividir(a, b) {
-    if (b === 0) {
-        return "Error: No se puede dividir por cero";
-    }
-    return a / b;
-}
-
-/* ============================
-   FUNCIÓN PRINCIPAL
-============================ */
-
-function calculadora() {
-
-    let numero1 = parseFloat(prompt("Ingrese el primer número:"));
-    let numero2 = parseFloat(prompt("Ingrese el segundo número:"));
-
-    // Validación de datos
-    if (isNaN(numero1) || isNaN(numero2)) {
-        alert("Error: Debe ingresar números válidos.");
-        return;
-    }
-
-    let operacion = prompt(
-        "Seleccione una operación:\n" +
-        "1 - Sumar\n" +
-        "2 - Restar\n" +
-        "3 - Multiplicar\n" +
-        "4 - Dividir"
-    );
-
-    let resultado;
-
-    // Uso de switch
-    switch (operacion) {
-        case "1":
-            resultado = sumar(numero1, numero2);
-            break;
-        case "2":
-            resultado = restar(numero1, numero2);
-            break;
-        case "3":
-            resultado = multiplicar(numero1, numero2);
-            break;
-        case "4":
-            resultado = dividir(numero1, numero2);
-            break;
-        default:
-            alert("Operación no válida.");
-            return;
-    }
-
-    alert("El resultado es: " + resultado);
-    console.log("Resultado:", resultado);
-}
-
-/* ============================
-   ARREGLOS Y CICLOS
-============================ */
-
-// Arreglo simple
-const numeros = [10, 20, 30, 40, 50];
-
-console.log("Recorriendo arreglo con FOR:");
-for (let i = 0; i < numeros.length; i++) {
-    console.log("Elemento:", numeros[i]);
-}
-
-// Uso de while
-console.log("Recorriendo arreglo con WHILE:");
-let contador = 0;
-while (contador < numeros.length) {
-    console.log("Elemento:", numeros[contador]);
-    contador++;
-}
-
-// Función que filtra números mayores a 25
-function filtrarMayoresA25(lista) {
-    return lista.filter(num => num > 25);
-}
-
-const numerosFiltrados = filtrarMayoresA25(numeros);
-console.log("Números mayores a 25:", numerosFiltrados);
-
-/* ============================
-   OBJETOS
-============================ */
-
-// Objeto simple
+// =========================
+// Estado (objetos y arreglos)
+// =========================
 const usuario = {
-    nombre: "Javiera",
-    edad: 25,
-    saludar: function () {
-        console.log("Hola, mi nombre es " + this.nombre);
-    }
+  nombre: "Invitado",
+  operacionesRealizadas: 0,
+  registrarOperacion() {
+    this.operacionesRealizadas += 1;
+  }
 };
 
-usuario.saludar();
+const historial = []; // arreglo de objetos
 
-// Arreglo de objetos
-const estudiantes = [
-    { nombre: "Ana", nota: 6.5 },
-    { nombre: "Pedro", nota: 4.8 },
-    { nombre: "Lucía", nota: 5.9 }
-];
-
-// Recorrer con forEach
-console.log("Listado de estudiantes:");
-estudiantes.forEach(est => {
-    console.log(est.nombre + " - Nota: " + est.nota);
-});
-
-// Usar map para obtener solo nombres
-const nombresEstudiantes = estudiantes.map(est => est.nombre);
-console.log("Nombres de estudiantes:", nombresEstudiantes);
-
-/* ============================
-   MENÚ CON BUCLE
-============================ */
-
-function iniciarAplicacion() {
-    let continuar = true;
-
-    while (continuar) {
-        calculadora();
-
-        let respuesta = prompt("¿Desea realizar otra operación? (si/no)");
-        if (respuesta.toLowerCase() !== "si") {
-            continuar = false;
-        }
-    }
-
-    alert("Gracias por usar la aplicación 👋");
+// =========================
+// Utilidades (validación / UI)
+// =========================
+function mostrarTitulo() {
+  console.clear();
+  console.log("=======================================");
+  console.log("   App Consola - Fundamentos JavaScript");
+  console.log("=======================================");
+  console.log(`Usuario: ${usuario.nombre} | Operaciones: ${usuario.operacionesRealizadas}`);
+  console.log("---------------------------------------");
 }
 
-// Ejecutar aplicación
-iniciarAplicacion();
+function pedirTexto(mensaje) {
+  const entrada = prompt(mensaje);
+  if (entrada === null) return null;
+  return entrada.trim();
+}
+
+function pedirNumero(mensaje) {
+  while (true) {
+    const entrada = prompt(mensaje);
+    if (entrada === null) return null;
+
+    const numero = Number(entrada.replace(",", "."));
+    if (Number.isFinite(numero)) return numero;
+
+    alert("Entrada inválida. Ingresa un número válido.");
+  }
+}
+
+function pausaConsola() {
+  alert("Revisa la consola para ver resultados.\nPresiona Aceptar para continuar.");
+}
+
+// =========================
+// Funciones matemáticas
+// =========================
+function sumar(a, b) { return a + b; }
+function restar(a, b) { return a - b; }
+function multiplicar(a, b) { return a * b; }
+function dividir(a, b) { return b === 0 ? null : a / b; }
+
+// =========================
+// Historial (arreglo de objetos)
+// =========================
+function registrarEnHistorial(tipo, a, b, resultado) {
+  const registro = {
+    id: historial.length + 1,
+    tipo,
+    a,
+    b,
+    resultado,
+    fecha: new Date().toLocaleString()
+  };
+
+  historial.push(registro);
+  usuario.registrarOperacion();
+}
+
+function verHistorial() {
+  console.log("----- HISTORIAL (forEach) -----");
+
+  if (historial.length === 0) {
+    console.log("Aún no hay operaciones registradas.");
+    return;
+  }
+
+  historial.forEach((op) => {
+    console.log(`#${op.id} | ${op.tipo} | ${op.a} y ${op.b} => ${op.resultado} | ${op.fecha}`);
+  });
+}
+
+function verResumen() {
+  console.log("----- RESUMEN (map) -----");
+
+  if (historial.length === 0) {
+    console.log("No hay datos para resumir.");
+    return;
+  }
+
+  const resumen = historial.map((op) => `${op.tipo}: ${op.resultado}`);
+  console.log(resumen);
+}
+
+function filtrarHistorialPorTipo() {
+  if (historial.length === 0) {
+    alert("Aún no hay historial. Realiza una operación primero.");
+    return;
+  }
+
+  const tipo = pedirTexto("Filtrar por tipo (ej: suma, resta, multiplicación, división):");
+  if (tipo === null) return;
+
+  if (tipo === "") {
+    alert("Debes ingresar un texto para filtrar.");
+    return;
+  }
+
+  const filtro = tipo.toLowerCase();
+  const filtrados = historial.filter((op) => op.tipo.toLowerCase().includes(filtro));
+
+  console.log(`----- FILTRO POR: "${tipo}" -----`);
+  if (filtrados.length === 0) {
+    console.log("No se encontraron coincidencias.");
+    return;
+  }
+
+  filtrados.forEach((op) => {
+    console.log(`#${op.id} | ${op.tipo} => ${op.resultado}`);
+  });
+}
+
+function demoRecorridoArreglo() {
+  const temas = ["JavaScript", "Condicionales", "Bucles", "Funciones", "Arreglos", "Objetos"];
+
+  console.log("----- DEMO RECORRIDO DE ARREGLO -----");
+
+  console.log("Recorrido con for:");
+  for (let i = 0; i < temas.length; i++) {
+    console.log(`(${i}) ${temas[i]}`);
+  }
+
+  console.log("Recorrido con while:");
+  let i = 0;
+  while (i < temas.length) {
+    console.log(`(${i}) ${temas[i]}`);
+    i++;
+  }
+}
+
+// =========================
+// Flujos principales
+// =========================
+function configurarNombre() {
+  const nombre = pedirTexto("Ingresa tu nombre (o deja vacío para Invitado):");
+  if (nombre === null) return;
+
+  usuario.nombre = nombre === "" ? "Invitado" : nombre;
+  alert(`Nombre configurado: ${usuario.nombre}`);
+}
+
+function calculadora() {
+  const a = pedirNumero("Ingresa el primer número:");
+  if (a === null) return;
+
+  const b = pedirNumero("Ingresa el segundo número:");
+  if (b === null) return;
+
+  const opcion = pedirTexto(
+    "Elige una operación:\n" +
+    "1) Suma\n" +
+    "2) Resta\n" +
+    "3) Multiplicación\n" +
+    "4) División"
+  );
+  if (opcion === null) return;
+
+  let tipo = "";
+  let resultado = null;
+
+  // switch requerido
+  switch (opcion) {
+    case "1":
+      tipo = "Suma";
+      resultado = sumar(a, b);
+      break;
+    case "2":
+      tipo = "Resta";
+      resultado = restar(a, b);
+      break;
+    case "3":
+      tipo = "Multiplicación";
+      resultado = multiplicar(a, b);
+      break;
+    case "4":
+      tipo = "División";
+      resultado = dividir(a, b);
+      break;
+    default:
+      alert("Opción inválida. Debes elegir 1, 2, 3 o 4.");
+      return;
+  }
+
+  // if requerido (validación)
+  if (resultado === null) {
+    alert("No se puede dividir por 0.");
+    console.log("División inválida: divisor = 0");
+    return;
+  }
+
+  registrarEnHistorial(tipo, a, b, resultado);
+
+  console.log(`Operación: ${tipo}`);
+  console.log(`Valores: ${a} y ${b}`);
+  console.log(`Resultado: ${resultado}`);
+
+  alert(`Resultado de ${tipo}: ${resultado}`);
+}
+
+// =========================
+// Menú principal (while)
+// =========================
+function iniciarApp() {
+  alert("Bienvenido/a. Esta app se ejecuta en la consola del navegador (F12).");
+
+  let salir = false;
+
+  while (!salir) {
+    mostrarTitulo();
+
+    const opcion = pedirTexto(
+      "MENÚ PRINCIPAL:\n" +
+      "1) Configurar nombre\n" +
+      "2) Calculadora (operaciones básicas)\n" +
+      "3) Ver historial\n" +
+      "4) Filtrar historial por tipo\n" +
+      "5) Ver resumen (map)\n" +
+      "6) Demo recorrido de arreglo (for/while)\n" +
+      "0) Salir"
+    );
+
+    if (opcion === null) {
+      // cancelar => salir (validación)
+      salir = true;
+      continue;
+    }
+
+    switch (opcion) {
+      case "1":
+        configurarNombre();
+        break;
+      case "2":
+        calculadora();
+        pausaConsola();
+        break;
+      case "3":
+        verHistorial();
+        pausaConsola();
+        break;
+      case "4":
+        filtrarHistorialPorTipo();
+        pausaConsola();
+        break;
+      case "5":
+        verResumen();
+        pausaConsola();
+        break;
+      case "6":
+        demoRecorridoArreglo();
+        pausaConsola();
+        break;
+      case "0":
+        salir = true;
+        break;
+      default:
+        alert("Opción inválida. Intenta nuevamente.");
+    }
+  }
+
+  console.log("Aplicación finalizada.");
+  alert("Aplicación finalizada. Revisa la consola para el registro final.");
+}
+
+// Ejecutar
+iniciarApp();
